@@ -1,7 +1,7 @@
 """
 Drone Energy usage simulation plugin
 
-Jointly developed by amvlab and Dr. Isabel Metz from DLR
+Developed by amvlab
 """
 import numpy as np
 import pandas as pd
