@@ -2,11 +2,17 @@
 
 # Energy use and life cycle greenhouse gas emissions of drones for commercial package delivery
 
-import config as cfg
+import json
+import os
 import numpy as np
 import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
+
+# Load configuration from JSON
+config_path = os.path.join(os.path.dirname(__file__), 'config.json')
+with open(config_path, 'r') as f:
+    cfg = json.load(f)
 
 airspeeds = np.arange(1, 30.5, 0.5)
 drone_masses = np.arange(1, 10.5, 0.5)
@@ -54,7 +60,7 @@ def stolaroff_vi(force_drag, force_grav, angle_of_attack, tas, n_rotors, chord_d
 
         # Calculate vi
         trig_term = np.sqrt(np.square(tas * np.cos(angle_of_attack)) + np.square(tas*np.sin(angle_of_attack) + vi))
-        vi_new = 2*(force_grav+force_drag) / (np.pi*np.square(chord_diameter)*n_rotors*cfg.rho0*trig_term) 
+        vi_new = 2*(force_grav+force_drag) / (np.pi*np.square(chord_diameter)*n_rotors*cfg['environment']['rho0']*trig_term) 
 
 
         # Exit condition if difference is lower than tolerance
@@ -126,13 +132,13 @@ for row in df.itertuples():
     thrusts_1.append(thrust)
 
     # calcualte power
-    power_exp = thrust* ((row.airspeed*np.sin(angle_of_attack) + vi) / (cfg.batt_eff))
+    power_exp = thrust* ((row.airspeed*np.sin(angle_of_attack) + vi) / (cfg['battery']['batt_eff']))
     epm_a = power_exp / (row.airspeed)
     epms_1.append(epm_a)
     power_expended_1.append(power_exp)
 
     # range
-    batt_energy = cfg.batt_senergy *  battery_mass  # J
+    batt_energy = cfg['battery']['batt_senergy'] *  battery_mass  # J
     flight_range = (0.25/1.2)*(batt_energy / epm_a)/1000
     flight_ranges_1.append(flight_range)
 
@@ -162,13 +168,13 @@ for row in df.itertuples():
     thrusts_2.append(thrust)
 
     # The last thing to calculate is energy consumption
-    power_exp = thrust* ((row.airspeed*np.sin(angle_of_attack) + vi) / (cfg.batt_eff))
+    power_exp = thrust* ((row.airspeed*np.sin(angle_of_attack) + vi) / (cfg['battery']['batt_eff']))
     epm_b = power_exp / (row.airspeed)
     epms_2.append(epm_b)
     power_expended_2.append(power_exp)
 
     # range
-    batt_energy = cfg.batt_senergy *  battery_mass   # J
+    batt_energy = cfg['battery']['batt_senergy'] *  battery_mass   # J
     flight_range = (0.25/1.2)*(batt_energy / epm_b)/1000
     flight_ranges_2.append(flight_range)
 
@@ -198,7 +204,10 @@ df['epm_3'] = (df['epm_payload'] + df['epm_no_payload'])*0.5
 
 
 # save as dataframe
-df.to_csv('energy.csv', index=False)
+output_dir = os.path.join(os.path.dirname(__file__), '..', 'plugins', 'drone_performance_data')
+os.makedirs(output_dir, exist_ok=True)
+output_path = os.path.join(output_dir, 'energy.csv')
+df.to_csv(output_path, index=False)
 
 
 # load csv

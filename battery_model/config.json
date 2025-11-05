@@ -1,0 +1,42 @@
+{
+  "environment": {
+    "rho0": 1.225,
+    "g0": 9.807
+  },
+  "battery": {
+    "batt_senergy": 540000,
+    "batt_eff": 0.7,
+    "batt_sfactor": 1.2,
+    "depth_discharge": 0.5,
+    "batt_mass": 10,
+    "batt_area": 0.015,
+    "batt_Cd": 1
+  },
+  "rotor": {
+    "blades_per_rotor": 3,
+    "blade_chord_length": 0.216,
+    "blade_Cl": 0.4,
+    "blade_Cd": 0.075,
+    "n_rotors": 8,
+    "disc_area": 0.0366
+  },
+  "drone": {
+    "drone_mass": 7,
+    "drone_area": 0.224,
+    "drone_Cd": 1.49
+  },
+  "payload": {
+    "payload_mass": 7,
+    "payload_area": 0.0929,
+    "payload_Cd": 2.2
+  },
+  "general": {
+    "lift_to_drag": 3,
+    "power_avionics": 0,
+    "induced_power_f": 1,
+    "profile_power_f": 0.683,
+    "profile_power_v_f": 0.0868,
+    "parasite_power_pay_f": 0.339,
+    "parasite_power_f": 0.214
+  }
+}
